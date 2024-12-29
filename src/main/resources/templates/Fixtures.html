@@ -216,14 +216,14 @@
             <a th:if="${gameWeekNumber > 1}" 
                th:href="@{'/fixtures/' + ${gameWeekNumber - 1}}"
                class="gameweek-btn left">
-                <
+                Prev Fixture
             </a>
             <div th:if="${gameWeekNumber == 1}" class="gameweek-btn-placeholder"></div>
 
             <a th:if="${gameWeekNumber < 38}" 
                th:href="@{'/fixtures/' + ${gameWeekNumber + 1}}"
                class="gameweek-btn right">
-                >
+                Next Fixture
             </a>
             <div th:if="${gameWeekNumber == 38}" class="gameweek-btn-placeholder"></div>
         </div>
