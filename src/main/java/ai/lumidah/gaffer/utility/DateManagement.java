@@ -2,6 +2,7 @@ package ai.lumidah.gaffer.utility;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
@@ -20,11 +21,13 @@ public class DateManagement {
 
     }
 
-    public static String epochToDateTimeHHMM(long epoch) { 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm")
-            .withZone(ZoneId.systemDefault());
-                
-        return formatter.format(Instant.ofEpochSecond(epoch));
-    }
+        public String epochToDateTimeHHMM(long epochTime) {
+            ZoneId singaporeZone = ZoneId.of("Asia/Singapore");
+            Instant instant = Instant.ofEpochMilli(epochTime);
+            ZonedDateTime singaporeTime = instant.atZone(singaporeZone);
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            return singaporeTime.format(formatter);
+        }
     
 }

@@ -244,7 +244,7 @@
                             <span class="status-badge finished">FT</span>
                         </div>
                     </div>
-                    <div th:unless="${fixture.finished}">
+                    <div th:unless="${fixture.started}">
                         <div class="match-time" th:text="${dateManagement.epochToDateTimeHHMM(fixture.kickoff_time)}">15:00</div>
                     </div>
                 </div>
