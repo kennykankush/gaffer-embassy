@@ -80,7 +80,7 @@ public class RefreshService{
     
     }
 
-    @Scheduled(initialDelay = 180000, fixedRate = 300000)
+    @Scheduled(initialDelay = 180000, fixedRate = 15600000)
     public void refreshDynamicCache() throws JsonMappingException, JsonProcessingException{
         System.out.println("I have awoken...");
         System.out.println("Cache Refresh Activated.....");
