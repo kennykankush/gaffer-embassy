@@ -97,6 +97,7 @@ public class HomeController {
 
         List<Player> top10TransferInEvent = players.stream()
             .sorted(Comparator.comparingInt(Player::getTransfersInEvent).reversed())
+            .limit(10)
             .collect(Collectors.toList());
 
         List<Player> top10TransferOutEvent = players.stream()
