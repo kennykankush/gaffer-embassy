@@ -21,13 +21,13 @@ public class DateManagement {
 
     }
 
-        public String epochToDateTimeHHMM(long epochTime) {
-            ZoneId singaporeZone = ZoneId.of("Asia/Singapore");
-            Instant instant = Instant.ofEpochMilli(epochTime);
-            ZonedDateTime singaporeTime = instant.atZone(singaporeZone);
-            
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            return singaporeTime.format(formatter);
-        }
+    public String epochToDateTimeHHMM(long epochTime) {
+        ZoneId singaporeZone = ZoneId.of("Asia/Singapore");
+        Instant instant = Instant.ofEpochMilli(epochTime * 1000);
+        ZonedDateTime singaporeTime = instant.atZone(singaporeZone);
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return singaporeTime.format(formatter);
+    }
     
 }
