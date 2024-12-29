@@ -41,7 +41,7 @@ public class CurrentGameWeek {
         int gameWeekNumber = getCurrentGameWeek(epoch, fixtures);
 
         List<Fixture> sortedFixtures = fixtures.stream()
-        .filter(fixture -> fixture.getGameWeek() == gameWeekNumber) // Filter by game week
+        .filter(fixture -> fixture.getGameWeek() == gameWeekNumber)
         .sorted(Comparator.comparingLong(Fixture::getKickoff_time))
         .toList();
 
