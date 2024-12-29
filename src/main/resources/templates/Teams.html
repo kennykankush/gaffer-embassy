@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Teams</title>
+</head>
+<body>
+    <h1>Team List</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>TLA</th>
+                <th>Name</th>
+                <th>Crest</th>
+                <th>Website</th>
+                <th>Club Colors</th>
+                <th>Venue</th>
+                <th>Founded</th>
+                <th>Strength</th>
+                <th>Strength Overall Home</th>
+                <th>Strength Overall Away</th>
+                <th>Strength Attack Home</th>
+                <th>Strength Attack Away</th>
+                <th>Strength Defence Home</th>
+                <th>Strength Defence Away</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="team : ${teams}">
+                <td th:text="${team.teamFd.tla}">TLA</td>
+                <td th:text="${team.teamFd.name}">Team Name</td>
+                <td>
+                    <img th:src="${team.teamFd.crest}" alt="Crest" style="width: 50px; height: 50px;">
+                </td>
+                <td>
+                    <a th:href="${team.teamFd.website}" th:text="${team.teamFd.website}">Website</a>
+                </td>
+                <td th:text="${team.teamFd.clubColors}">Club Colors</td>
+                <td th:text="${team.teamFd.venue}">Venue</td>
+                <td th:text="${team.teamFd.founded}">Founded</td>
+                <td th:text="${team.teamFpl.strength}">Strength Overall</td>
+                <td th:text="${team.teamFpl.strengthOverallHome}">Strength Overall Home</td>
+                <td th:text="${team.teamFpl.strengthOverallAway}">Strength Overall Away</td>
+                <td th:text="${team.teamFpl.strengthAttackHome}">Strength Attack Home</td>
+                <td th:text="${team.teamFpl.strengthAttackAway}">Strength Attack Away</td>
+                <td th:text="${team.teamFpl.strengthDefenceHome}">Strength Defence Home</td>
+                <td th:text="${team.teamFpl.strengthDefenceAway}">Strength Defence Away</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

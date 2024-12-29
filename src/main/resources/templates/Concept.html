@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <title>Create Concept</title>
+    <style>
+        body {
+            background-image: url('bg.png');
+            background-size: cover;
+            background-color: #000000;
+            color: #ffffff;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        nav {
+            margin-top: 18px;
+            margin-left: 20px;
+        }
+
+        .navbar-collapse {
+            display: flex;
+            justify-content: center;
+            margin-left: 10px;
+        }
+
+        .nav-link {
+            margin: 0 30px;  
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+
+        .navbar-brand{
+            font-size: 33px;
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .nav-link:hover {
+            color: #aaa !important;
+        }
+
+        .formation-grid {
+            display: grid;
+            gap: 20px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .player-select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .formation-select {
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgb(25, 25, 25);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .search-result-item {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .search-result-item:hover {
+            background: #f0f0f0;
+        }
+        .selected-player {
+            margin-top: 8px;
+            padding: 8px;
+            background: #212121;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bolder " href="/">GAFFER</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/fixtures">Fixtures</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/fdr">Fixture Difficulty Rating</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/players">Players</a>
+                    </li>
+                </ul>
+            </div>
+
+            <a href="/concept" class="btn btn-outline-light rounded-2 ms-3">Try Concept Squad</a>
+        </div>
+    </nav>
+
+    
+    <div class="formation-grid">
+        <form th:action="@{/concept/submit}" th:object="${concept}" method="post">
+
+            <div class="formation-select">
+                <label>Select Formation:</label>
+                <select id="formationSelect">
+                    <option value="">Choose formation</option>
+                    <option value="352">3-5-2</option>
+                    <option value="442">4-4-2</option>
+                    <option value="433">4-3-3</option>
+                    <option value="532">5-3-2</option>
+                </select>
+            </div>
+
+
+            <div class="player-select">
+                <label>Goalkeeper:</label>
+                <input type="text" class="search-input" 
+                       data-position="1" 
+                       data-element-type="1"
+                       placeholder="Search goalkeeper..."/>
+                <div class="search-results"></div>
+                <div class="selected-player"></div>
+                <input type="hidden" th:field="*{pos1Id}"/>
+            </div>
+
+  
+            <div id="outfieldPlayers">
+ 
+            </div>
+
+            <button type="submit" style="margin-top: 20px; padding: 10px 20px;">Submit</button>
+        </form>
+    </div>
+
+    <script th:inline="javascript">
+        const defenders = /*[[${defenders}]]*/ [];
+        const midfielders = /*[[${midfielders}]]*/ [];
+        const forwards = /*[[${forwards}]]*/ [];
+
+        function setupSearch(input, players) {
+            const resultsDiv = input.nextElementSibling;
+            const selectedDiv = resultsDiv.nextElementSibling;
+            const hiddenInput = selectedDiv.nextElementSibling;
+
+            input.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                if (searchTerm.length < 2) {
+                    resultsDiv.style.display = 'none';
+                    return;
+                }
+
+                const matches = players.filter(player => 
+                    player.webName.toLowerCase().includes(searchTerm)
+                );
+
+                resultsDiv.innerHTML = matches
+                    .map(player => `
+                        <div class="search-result-item" 
+                             data-id="${player.id}" 
+                             data-name="${player.webName}">
+                            ${player.webName}
+                        </div>
+                    `).join('');
+
+                resultsDiv.style.display = matches.length ? 'block' : 'none';
+            });
+
+            resultsDiv.addEventListener('click', function(e) {
+                const item = e.target.closest('.search-result-item');
+                if (!item) return;
+
+                const playerId = item.dataset.id;
+                const playerName = item.dataset.name;
+
+                hiddenInput.value = playerId;
+                input.value = '';
+                resultsDiv.style.display = 'none';
+                selectedDiv.innerHTML = playerName;
+                selectedDiv.style.display = 'block';
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !resultsDiv.contains(e.target)) {
+                    resultsDiv.style.display = 'none';
+                }
+            });
+        }
+
+        setupSearch(
+            document.querySelector('[data-position="1"]'),
+            /*[[${goalkeepers}]]*/ []
+        );
+
+        document.getElementById('formationSelect').addEventListener('change', function() {
+            const formation = this.value;
+            const outfieldContainer = document.getElementById('outfieldPlayers');
+            outfieldContainer.innerHTML = '';
+            
+            if (!formation) return;
+            
+            const [def, mid, fwd] = formation.split('').map(Number);
+            let positionCounter = 2;
+            
+            for (let i = 0; i < def; i++) {
+                addPlayerSelect(positionCounter, 2, 'Defender', defenders);
+                positionCounter++;
+            }
+            
+            for (let i = 0; i < mid; i++) {
+                addPlayerSelect(positionCounter, 3, 'Midfielder', midfielders);
+                positionCounter++;
+            }
+            
+            for (let i = 0; i < fwd; i++) {
+                addPlayerSelect(positionCounter, 4, 'Forward', forwards);
+                positionCounter++;
+            }
+        });
+
+        function addPlayerSelect(position, elementType, label, players) {
+            const container = document.createElement('div');
+            container.className = 'player-select';
+            
+            container.innerHTML = `
+                <label>${label} ${position}:</label>
+                <input type="text" class="search-input" 
+                       data-position="${position}" 
+                       data-element-type="${elementType}"
+                       placeholder="Search ${label.toLowerCase()}..."/>
+                <div class="search-results"></div>
+                <div class="selected-player"></div>
+                <input type="hidden" name="pos${position}Id" id="pos${position}Id" th:field="*{pos${position}Id}"/>
+                <input type="hidden" name="elementType${position}" value="${elementType}"/>
+                <input type="hidden" name="position${position}" value="${position}"/>
+            `;
+            
+            document.getElementById('outfieldPlayers').appendChild(container);
+            
+            setupSearch(
+                container.querySelector('.search-input'),
+                players
+            );
+        }
+    </script>
+</body>
+</html>

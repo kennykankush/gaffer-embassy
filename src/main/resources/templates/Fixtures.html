@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixtures</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url([[@{/bg.png}]]);
+            background-size: cover;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+        }
+
+        nav {
+            margin-top: 18px;
+            margin-left: 20px;
+        }
+
+        .navbar-collapse {
+            display: flex;
+            justify-content: center;
+            margin-left: 10px;
+        }
+
+        .nav-link {
+            margin: 0 30px;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+
+        .navbar-brand {
+            font-size: 33px;
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        .nav-link:hover {
+            color: #aaa !important;
+        }
+
+        .fixtures-container {
+            background: rgba(31, 25, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .fixtures-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .fixtures-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #fffb10, #ff0655f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0;
+        }
+
+        .fixture-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .team-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .home-team {
+            justify-content: flex-end;
+        }
+
+        .away-team {
+            justify-content: flex-start;
+        }
+
+        .team-logo {
+            width: 45px;
+            height: 45px;
+        }
+
+        .team-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .score-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .match-time {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #ffc107;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.finished {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .fixtures-container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .team-name {
+                font-size: 0.9rem;
+            }
+
+            .score-section {
+                padding: 8px 15px;
+                font-size: 1.2rem;
+                min-width: 80px;
+            }
+
+            .gameweek-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }        }
+
+        .gameweek-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .gameweek-btn.left {
+            text-align: left;
+        }
+
+        .gameweek-btn.right {
+            text-align: right;
+        }
+
+        .gameweek-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bolder" href="/">GAFFER</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/fixtures">Fixtures</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/fdr">Fixture Difficulty Rating</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/players">Players</a>
+                    </li>
+                </ul>
+            </div>
+            <a href="/concept" class="btn btn-outline-light rounded-2 ms-3">Try Concept Squad</a>
+        </div>
+    </nav>
+
+
+    <div class="fixtures-container">
+        <div class="gameweek-navigation">
+            <a th:if="${gameWeekNumber > 1}" 
+               th:href="@{'/fixtures/' + ${gameWeekNumber - 1}}"
+               class="gameweek-btn left">
+                <
+            </a>
+            <div th:if="${gameWeekNumber == 1}" class="gameweek-btn-placeholder"></div>
+
+            <a th:if="${gameWeekNumber < 38}" 
+               th:href="@{'/fixtures/' + ${gameWeekNumber + 1}}"
+               class="gameweek-btn right">
+                >
+            </a>
+            <div th:if="${gameWeekNumber == 38}" class="gameweek-btn-placeholder"></div>
+        </div>
+        <div class="fixtures-header">
+            <h2 th:text="'Gameweek ' + ${gameWeekNumber}">Gameweek Header</h2>
+        </div>
+
+        <div class="fixture-card" th:each="fixture : ${fixtures}">
+            <div class="row align-items-center">
+                <div class="col-md-5">
+                    <div class="team-section home-team">
+                        <span class="team-name" th:text="${teamProcessor.mapIdToShortTeamName(fixture.homeTeamId)}">Home Team</span>
+                        <img class="team-logo" th:src="@{${'/'+ teamProcessor.mapTeamLogo(fixture.homeTeamId)}}" alt="Home Team Logo">
+                    </div>
+                </div>
+
+                <div class="col-md-2 text-center my-3 my-md-0">
+                    <div th:if="${fixture.finished}">
+                        <div class="score-section">
+                            <span th:text="${fixture.homeScore}">0</span>
+                            <span>-</span>
+                            <span th:text="${fixture.awayScore}">0</span>
+                        </div>
+                        <div class="mt-2">
+                            <span class="status-badge finished">FT</span>
+                        </div>
+                    </div>
+                    <div th:unless="${fixture.finished}">
+                        <div class="match-time" th:text="${dateManagement.epochToDateTimeHHMM(fixture.kickoff_time)}">15:00</div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="team-section away-team">
+                        <img class="team-logo" th:src="@{${'/'+ teamProcessor.mapTeamLogo(fixture.awayTeamId)}}" alt="Away Team Logo">
+                        <span class="team-name" th:text="${teamProcessor.mapIdToShortTeamName(fixture.awayTeamId)}">Away Team</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
