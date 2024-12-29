@@ -35,7 +35,8 @@ public class RefreshService{
     private ApiFetch apiFetch;
 
     private void deleteDynamicCache(){
-        playerRepository.deleteAllPlayers();
+        long epoch = System.currentTimeMillis() / 1000;
+        playerRepository.deleteAllPlayers(epoch, fixtureRepository.getAllFixtures());
         System.out.println("deleted Players");
         fixtureRepository.deleteAllFixtures();
         System.out.println("deleted All Fixtures");
@@ -58,12 +59,17 @@ public class RefreshService{
         long currentEpoch = System.currentTimeMillis() / 1000;
         int currentGameWeek = CurrentGameWeek.getCurrentGameWeek(currentEpoch, fixtures);
 
-        if (!playerRepository.doesLivePlayersExist(String.valueOf(currentGameWeek))){
-            System.out.println("The current game week " + currentGameWeek + "does not exist");
-            List<LivePlayer> livePlayers = apiFetch.jsonLivePlayerToModelLivePlayer(currentGameWeek);
-            playerRepository.saveLivePlayers(livePlayers, "live:" + currentGameWeek);
+        List<LivePlayer> livePlayers = apiFetch.jsonLivePlayerToModelLivePlayer(currentGameWeek);
+        playerRepository.saveLivePlayers(livePlayers, "live:" + currentGameWeek);
 
-        }
+        System.out.println("saving live: " + currentGameWeek);
+
+        List<LivePlayer> livePlayers2 = apiFetch.jsonLivePlayerToModelLivePlayer(currentGameWeek - 1);
+        playerRepository.saveLivePlayers(livePlayers2, "live:" + (currentGameWeek - 1));
+
+        System.out.println("saving live: " + (currentGameWeek - 1));
+
+        
         
         // for (int i = 1; i < currentGameWeek; i++){
         //     List<LivePlayer> livePlayers = apiFetch.jsonLivePlayerToModelLivePlayer(i);
@@ -74,7 +80,7 @@ public class RefreshService{
     
     }
 
-    @Scheduled(initialDelay = 3600001, fixedRate = 3600001)
+    @Scheduled(initialDelay = 180000, fixedRate = 300000)
     public void refreshDynamicCache() throws JsonMappingException, JsonProcessingException{
         System.out.println("I have awoken...");
         System.out.println("Cache Refresh Activated.....");

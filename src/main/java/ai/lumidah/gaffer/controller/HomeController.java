@@ -96,13 +96,12 @@ public class HomeController {
         //Transfer Top 10 In and Out
 
         List<Player> top10TransferInEvent = players.stream()
-            .sorted(Comparator.comparingInt(Player::getTransfersInEvent).reversed()) // Sort by transfersInEvent descending
-            .limit(10) // Take the top 10
+            .sorted(Comparator.comparingInt(Player::getTransfersInEvent).reversed())
             .collect(Collectors.toList());
 
         List<Player> top10TransferOutEvent = players.stream()
-            .sorted(Comparator.comparingInt(Player::getTransfersOutEvent).reversed()) // Sort by transfersOutEvent descending
-            .limit(10) // Take the top 10
+            .sorted(Comparator.comparingInt(Player::getTransfersOutEvent).reversed())
+            .limit(10)
             .collect(Collectors.toList());
 
         List<Player> formPlayers = players.stream()
@@ -183,19 +182,19 @@ public class HomeController {
     List<Player> allPlayers = playerService.getAllPlayers();
 
     List<Player> goalkeepers = allPlayers.stream()
-        .filter(player -> player.getElementType() == 1) // 1 for Goalkeeper
+        .filter(player -> player.getElementType() == 1)
         .toList();
 
     List<Player> defenders = allPlayers.stream()
-        .filter(player -> player.getElementType() == 2) // 2 for Defender
+        .filter(player -> player.getElementType() == 2)
         .toList();
 
     List<Player> midfielders = allPlayers.stream()
-        .filter(player -> player.getElementType() == 3) // 3 for Midfielder
+        .filter(player -> player.getElementType() == 3)
         .toList();
 
     List<Player> forwards = allPlayers.stream()
-        .filter(player -> player.getElementType() == 4) // 4 for Forward
+        .filter(player -> player.getElementType() == 4)
         .toList();
 
     model.addAttribute("goalkeepers", goalkeepers);
@@ -245,9 +244,11 @@ public class HomeController {
         boolean livePlayersExist = playerService.doesLivePlayersExist(concept.getGameweekChallenge());
         
         if (livePlayersExist) {
+            System.out.println("livePlayerExist");
             gameWeekValue = concept.getGameweekChallenge();
             livePlayers = playerService.getAllLivePlayers(concept.getGameweekChallenge());
         } else {
+            System.out.println("livePlayerExist does not exist");
             int backOne = Integer.parseInt(concept.getGameweekChallenge()) - 1;
             livePlayers = playerService.getAllLivePlayers(String.valueOf(backOne));
             gameWeekValue = String.valueOf(backOne);

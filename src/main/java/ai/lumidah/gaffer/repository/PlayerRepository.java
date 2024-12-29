@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import ai.lumidah.gaffer.model.Fixture;
 import ai.lumidah.gaffer.model.LivePlayer;
 import ai.lumidah.gaffer.model.Player;
+import ai.lumidah.gaffer.utility.CurrentGameWeek;
 
 @Repository
 public class PlayerRepository {
@@ -89,14 +91,13 @@ public class PlayerRepository {
 
     }
 
-    public void deleteAllPlayers(){
-        // Set<String> keys = template.keys("live:*");
-
-        // if (keys != null && !keys.isEmpty()) {
-
-        // template.delete(keys);
-        // }
+    public void deleteAllPlayers(long epoch, List<Fixture> fixtures){
         
+        int gameweek = CurrentGameWeek.getCurrentGameWeek(epoch, fixtures);
+        int gameweekBefore = gameweek - 1;
+
+        template.delete(liveKey + gameweek);
+        template.delete(liveKey + gameweekBefore);
         template.delete(playersKey);
     }
     
