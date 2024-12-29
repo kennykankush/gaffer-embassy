@@ -212,7 +212,7 @@
                     <img th:src="@{'https://resources.premierleague.com/premierleague/photos/players/110x140/p' + ${playerProcessor.mapPhotoCode(conceptSquad.pos9Id, players)} + '.png'}" 
                          alt="Player" class="player-image">
                     <p class="player-name" th:text="${playerService.getPlayerNameById(conceptSquad.pos9Id)}"></p>
-                    <span class="player-points" th:text="${playerService.mapLivePoints(conceptSquad.pos9Id, livePlayers)}"></span>
+                    <span class="player-points" th:text="${playerProcessor.mapLivePoints(conceptSquad.pos9Id, livePlayers)}"></span>
                 </div>
                 <div th:if="${conceptSquad.elementType10 == '4'}" class="player-card shadow-sm">
                     <img th:src="@{'https://resources.premierleague.com/premierleague/photos/players/110x140/p' + ${playerProcessor.mapPhotoCode(conceptSquad.pos10Id, players)} + '.png'}" 
