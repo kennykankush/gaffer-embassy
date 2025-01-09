@@ -123,7 +123,7 @@ public class HomeController {
                 .collect(Collectors.toList());
 
         List<Player> teamOfTheWeek = new ArrayList<>();
-        List<LiveDreamTeam> dreamTeamIds = apiFetch.jsonDreamTeamToModelDreamTeam(currentGameWeek);
+        List<LiveDreamTeam> dreamTeamIds = apiFetch.jsonDreamTeamToModelDreamTeam(currentGameWeek - 1);
 
         for (int i = 0; i < dreamTeamIds.size(); i++){
             teamOfTheWeek.add(playerService.getPlayerById(dreamTeamIds.get(i).getId()));
